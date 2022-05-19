@@ -1,113 +1,88 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
 
-// "src/math"
+	"golang.org/x/exp/constraints"
+)
 
-// var a string
-
-type Carro struct {
-	Nome string
+type Number interface {
+	~int | ~int64 | ~float64
 }
 
-func (c *Carro) andar() {
-	c.Nome = "civic"
-	fmt.Println(c.Nome, "andou")
+type MyNumber int
+
+func SomaInteiros(m map[string]int64) int64 {
+	var soma int64
+	for _, v := range m {
+		soma += v
+	}
+	return soma
 }
 
-func abc(a *int) {
-	*a = 200
+func SomaFloat(m map[string]float64) float64 {
+	var soma float64
+	for _, v := range m {
+		soma += v
+	}
+	return soma
 }
 
-func oldmain() {
+func SomaGenerica[T Number](m map[string]T) T {
+	var soma T
+	for _, v := range m {
+		soma += v
+	}
+	return soma
+}
 
-	carro := Carro{
-		Nome: "a3",
+// comparable is just to equality comparison
+func Soma[T comparable](n1 T, n2 T) T {
+	if n1 == n2 {
+		return n1
+	}
+	return n2
+}
+
+func Max[T constraints.Ordered](n1 T, n2 T) T {
+	if n1 > n2 {
+		return n1
+	}
+	return n2
+}
+
+type stringer interface {
+	String() string
+}
+
+type Mystring string
+
+func (m Mystring) String() string {
+	return string(m)
+}
+
+func concat[T stringer](vals []T) string {
+	result := ""
+	for _, val := range vals {
+		result += val.String()
 	}
 
-	carro.andar()
-
-	fmt.Println(carro.Nome)
-
-	// variavel := 10
-
-	// abc(&variavel)
-
-	// fmt.Println(variavel)
-
-	// a := 10
-
-	// fmt.Println(&a)
-
-	// var ponteiro *int = &a
-
-	// fmt.Println(*ponteiro)
-
-	// carro := Carro{Nome: "corolla"}
-
-	// carro.andar()
-
-	// a = "victor"
-	// fmt.Printf("%v \n%T", a, a)
-
-	// resultado := math.Soma(1, 1)
-	// fmt.Printf("\n%v", resultado)
-
-	// res, err := http.Get("http://goodasdsadasdgle.com.br")
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
-	// fmt.Println(res.Header)
-
-	// res, err := soma(11, 9)
-	// if err != nil {
-	// 	log.Fatal(err.Error())
-	// }
-	// fmt.Println(res)
-
-	// res, _ := soma(11, 9)
-	// fmt.Println(res)
-
-	// result := soma(11, 9)
-	// fmt.Println(result)
-
-	// result := somaTudo(11, 9, 1, 2, 3, 4, 5, 6)
-	// fmt.Println(result)
-
-	// resultado := func(x ...int) func() int {
-	// 	result := 0
-
-	// 	for _, v := range x {
-	// 		result += v
-	// 	}
-	// 	return func() int {
-	// 		return result * result
-	// 	}
-	// }
-
-	// fmt.Println(resultado(11, 11, 11, 11)())
+	return result
 }
 
-// func somaTudo(x ...int) int {
-// 	result := 0
+func main() {
+	// fmt.Println(SomaInteiros(map[string]int64{"a": 1, "b": 2, "c": 3}))
+	// fmt.Println(SomaFloat(map[string]float64{"a": 1.1, "b": 22.2, "c": 3.2}))
 
-// 	for _, v := range x {
-// 		result += v
-// 	}
+	fmt.Println(concat([]Mystring{"vic", "tor"}))
 
-// 	return result
-// }
+	// var x, y, z MyNumber
+	// x = 1
+	// y = 2
+	// z = 3
 
-// func soma(x int, y int) (result int) {
-// 	result = x + y
-// 	return
-// }
+	// fmt.Println(SomaGenerica(map[string]MyNumber{"a": x, "b": y, "c": z}))
 
-// func soma(x int, y int) (int, error) {
-// 	res := x + y
-// 	if res > 10 {
-// 		return 0, errors.New("Total maior que 10")
-// 	}
-
-// 	return res, nil
-// }
+	// fmt.Println(SomaGenerica(map[string]int64{"a": 1, "b": 2, "c": 3}))
+	// fmt.Println(SomaGenerica(map[string]float64{"a": 1.1, "b": 22.2, "c": 3.2}))
+}
